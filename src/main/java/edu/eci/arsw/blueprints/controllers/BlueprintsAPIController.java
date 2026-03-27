@@ -10,6 +10,8 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.Map;
 import java.util.Set;
@@ -29,16 +31,24 @@ public class BlueprintsAPIController {
     }
 
     // GET /blueprints/{author}
+    @Operation(
+        summary = "Obtiene todos los Blueprints",
+        description = "retorna todos los blueprints"
+    )
     @GetMapping("/{author}")
     public ResponseEntity<?> byAuthor(@PathVariable String author) {
         try {
             return ResponseEntity.ok(services.getBlueprintsByAuthor(author));
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("204 Not Found", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("404 Not Found", e.getMessage()));
         }
     }
 
     // GET /blueprints/{author}/{bpname}
+    @Operation(
+        summary = "Obtiene tel autor y el nombre bp",
+        description = "retorna el autor y el nombre bp"
+    )
     @GetMapping("/{author}/{bpname}")
     public ResponseEntity<?> byAuthorAndName(@PathVariable String author, @PathVariable String bpname) {
         try {
@@ -49,6 +59,10 @@ public class BlueprintsAPIController {
     }
 
     // POST /blueprints
+    @Operation(
+        summary = "Crea blueprints",
+        description = "retorna el blueprint creado"
+    )
     @PostMapping
     public ResponseEntity<?> add(@Valid @RequestBody NewBlueprintRequest req) {
         try {
@@ -61,6 +75,10 @@ public class BlueprintsAPIController {
     }
 
     // PUT /blueprints/{author}/{bpname}/points
+    @Operation(
+        summary = "Actualiza completamente los puntos",
+        description = "retorna los puntos actualizados"
+    )
     @PutMapping("/{author}/{bpname}/points")
     public ResponseEntity<?> addPoint(@PathVariable String author, @PathVariable String bpname,
                                       @RequestBody Point p) {
@@ -81,5 +99,6 @@ public class BlueprintsAPIController {
     public record ApiResponse<T>(int code, String message, T data) {
     } 
     
+
 
 }
